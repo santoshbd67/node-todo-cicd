@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = 'santoshbd67/nodetodo'
         IMAGE_TAG = 'v2'
         CONTAINER_NAME = 'nodetodo-container'
-        PORT_MAPPING = '8000:8000'
+        PORT_MAPPING = '8001:8001'
     }
 
     stages {
