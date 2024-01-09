@@ -1,40 +1,34 @@
 pipeline {
-    agent { label "dev-server"}
+    agent any
+     environment {
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_id')
+        IMAGE_NAME = 'santoshbd67/nodetodo'
+        IMAGE_TAG = 'v24'
+    }
     
     stages {
         
         stage("code"){
             steps{
-                git url: "https://github.com/LondheShubham153/node-todo-cicd.git", branch: "master"
-                echo 'bhaiyya code clone ho gaya'
+                git url: "https://github.com/santoshbd67/node-todo-cicd.git"
             }
         }
-        stage("build and test"){
-            steps{
-                sh "docker build -t node-app-test-new ."
-                echo 'code build bhi ho gaya'
-            }
-        }
-        stage("scan image"){
-            steps{
-                echo 'image scanning ho gayi'
-            }
-        }
-        stage("push"){
-            steps{
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker tag node-app-test-new:latest ${env.dockerHubUser}/node-app-test-new:latest"
-                sh "docker push ${env.dockerHubUser}/node-app-test-new:latest"
-                echo 'image push ho gaya'
+        
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+
+                    // Authenticate with Docker Hub
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
+                        // Push Docker image to Docker Hub
+                        docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
+                    }
                 }
-            }
-        }
-        stage("deploy"){
-            steps{
-                sh "docker-compose down && docker-compose up -d"
-                echo 'deployment ho gayi'
             }
         }
     }
 }
+       
+     
