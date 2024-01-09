@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub_id')
         IMAGE_NAME = 'santoshbd67/nodetodo'
-        IMAGE_TAG = 'v24'
+        IMAGE_TAG = 'v2024'
         CONTAINER_NAME = 'nodetodo-container'
         PORT_MAPPING = '8000:8000'
     }
